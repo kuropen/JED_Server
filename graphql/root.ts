@@ -3,6 +3,7 @@ import {
     Area,
     PeakType
 } from "@prisma/client"
+import { Kind, GraphQLScalarType } from "graphql"
 import { IncomingMessage } from "http"
 import moment from "moment-timezone"
 import ReadMessage from "../message"
@@ -17,6 +18,10 @@ interface AreaByCodeArgs {
 interface PeakElectricityArgs {
     date: string,
     type?: PeakType,
+}
+interface TimeDemandArgs {
+    limit?: number,
+    areaCode?: string,
 }
 interface PostPeakElectricityArgs {
     peakInput: PostPeakElectricityInput
@@ -59,6 +64,22 @@ const convertDate = (input: string): string => {
 }
 
 export default class GraphQLRoot {
+    Date: GraphQLScalarType = new GraphQLScalarType({
+        name: 'Date',
+        description: 'Date custom scalar type',
+        parseValue(value) {
+            return new Date(value); // value from the client
+        },
+        serialize(value) {
+            return value.getTime(); // value sent to the client
+        },
+        parseLiteral(ast) {
+            if (ast.kind === Kind.INT) {
+                return new Date(+ast.value); // ast value is always in string format
+            }
+            return null;
+        },
+    })
     authorized<T extends IncomingMessage>(_: any, req: T) {
         return authentication(req)
     }
@@ -91,6 +112,42 @@ export default class GraphQLRoot {
             where: {
                 date: convertDate(arg.date),
                 type: arg.type
+            }
+        })
+    }
+    hourlyDemand(arg: TimeDemandArgs) {
+        let appliedLimit = 24
+        if (arg.limit && arg.limit < 100) {
+            appliedLimit = arg.limit
+        }
+        const whereClause = arg.areaCode ? {
+            area: {
+                code: arg.areaCode,
+            }
+        } : undefined
+        return prisma.hourlyDemand.findMany({
+            where: whereClause,
+            take: appliedLimit,
+            orderBy: {
+                absTime: "desc",
+            }
+        })
+    }
+    fiveMinDemand(arg: TimeDemandArgs) {
+        let appliedLimit = 36
+        if (arg.limit && arg.limit < 150) {
+            appliedLimit = arg.limit
+        }
+        const whereClause = arg.areaCode ? {
+            area: {
+                code: arg.areaCode,
+            }
+        } : undefined
+        return prisma.fiveMinDemand.findMany({
+            where: whereClause,
+            take: appliedLimit,
+            orderBy: {
+                absTime: "desc"
             }
         })
     }
@@ -139,6 +196,7 @@ export default class GraphQLRoot {
             create: {
                 ...hourlyInput,
                 date: convertDate(hourlyInput.date),
+                absTime: `${hourlyInput.date}T${hourlyInput.hour}:00:00+09:00`
             }
         })
     }
@@ -162,6 +220,7 @@ export default class GraphQLRoot {
             create: {
                 ...fiveInput,
                 date: convertDate(fiveInput.date),
+                absTime: `${fiveInput.date}T${fiveInput.time}:00+09:00`,
             }
         })
     }

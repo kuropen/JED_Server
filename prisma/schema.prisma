@@ -56,6 +56,7 @@ model HourlyDemand {
   areaId       Int
   date         DateTime @db.Date
   hour         Int
+  absTime      DateTime?
   amount       Int
   supply       Int
   percentage   Int
@@ -72,6 +73,7 @@ model FiveMinDemand {
   areaId       Int
   date         DateTime @db.Date
   time         String
+  absTime      DateTime?
   amount       Int
   solar        Int?
   wind         Int?

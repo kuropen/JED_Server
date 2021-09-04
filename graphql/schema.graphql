@@ -1,3 +1,5 @@
+scalar Date
+
 type Area {
     id: Int!
     code: String!
@@ -47,16 +49,17 @@ type HourlyDemand {
     createdAt: String!
     updatedAt: String!
     areaId: Int!
-    date: String!
+    date: Date!
     hour: Int!
     amount: Int!
     supply: Int!
     percentage: Int!
+    absTime: Date
 }
 
 input HourlyDemandInput {
     areaId: Int!
-    date: String!
+    date: Date!
     hour: Int!
     amount: Int!
     supply: Int!
@@ -68,11 +71,12 @@ type FiveMinDemand {
     createdAt: String!
     updatedAt: String!
     areaId: Int!
-    date: String!
+    date: Date!
     time: String!
     amount: Int!
     solar: Int
     wind: Int
+    absTime: Date
 }
 
 input FiveMinDemandInput {
@@ -84,13 +88,14 @@ input FiveMinDemandInput {
     wind: Int
 }
 
-
 type Query {
     authorized: Boolean
     message: String
     allArea: [Area!]!
     areaByCode(code: String!): Area
     peakElectricity(date: String!, type: PeakType): [PeakElectricity]
+    hourlyDemand(areaCode: String, limit: Int): [HourlyDemand]
+    fiveMinDemand(areaCode: String, limit: Int): [FiveMinDemand]
 }
 
 type Mutation {
