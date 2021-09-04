@@ -63,6 +63,20 @@ const convertDate = (input: string): string => {
     return `${input}T00:00:00Z`
 }
 
+const convertDigit = (input: string | number): string => {
+    if (
+        (typeof input === "string" && parseInt(input) < 10 && input.length < 2)
+        || (typeof input === "number" && input < 10)) {
+        return `0${input}`
+    }
+    return input.toString()
+}
+
+const convertTime = (input: string): string => {
+    const timeElement = input.split(":")
+    return timeElement.map((section) => convertDigit(section)).join(":")
+}
+
 export default class GraphQLRoot {
     Date: GraphQLScalarType = new GraphQLScalarType({
         name: 'Date',
@@ -200,7 +214,7 @@ export default class GraphQLRoot {
             create: {
                 ...hourlyInput,
                 date: convertDate(hourlyInput.date),
-                absTime: `${hourlyInput.date}T${hourlyInput.hour}:00:00+09:00`
+                absTime: `${hourlyInput.date}T${convertDigit(hourlyInput.hour)}:00:00+09:00`
             }
         })
     }
@@ -209,12 +223,13 @@ export default class GraphQLRoot {
             throw "Unauthorized Access.";
         }
         const {fiveInput} = arg
+        const time = convertTime(fiveInput.time)
         return prisma.fiveMinDemand.upsert({
             where: {
                 areaId_date_time: {
                     areaId: fiveInput.areaId,
                     date: convertDate(fiveInput.date),
-                    time: fiveInput.time,
+                    time: time,
                 }
             },
             update: {
@@ -224,7 +239,7 @@ export default class GraphQLRoot {
             create: {
                 ...fiveInput,
                 date: convertDate(fiveInput.date),
-                absTime: `${fiveInput.date}T${fiveInput.time}:00+09:00`,
+                absTime: `${fiveInput.date}T${time}:00+09:00`,
             }
         })
     }
