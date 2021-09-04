@@ -16,7 +16,7 @@ interface AreaByCodeArgs {
     code: string
 }
 interface PeakElectricityArgs {
-    date: string,
+    date?: string,
     type?: PeakType,
 }
 interface TimeDemandArgs {
@@ -108,9 +108,10 @@ export default class GraphQLRoot {
         return ReadMessage()
     }
     peakElectricity(arg: PeakElectricityArgs) {
+        const currentDate = moment().tz("Asia/Tokyo").format("YYYY-MM-DD")
         return prisma.peakElectricity.findMany({
             where: {
-                date: convertDate(arg.date),
+                date: convertDate(arg.date || currentDate),
                 type: arg.type
             },
             orderBy: {

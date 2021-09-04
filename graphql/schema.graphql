@@ -93,7 +93,7 @@ type Query {
     message: String
     allArea: [Area!]!
     areaByCode(code: String!): Area
-    peakElectricity(date: String!, type: PeakType): [PeakElectricity]
+    peakElectricity(date: String, type: PeakType): [PeakElectricity]
     hourlyDemand(areaCode: String, limit: Int): [HourlyDemand]
     fiveMinDemand(areaCode: String, limit: Int): [FiveMinDemand]
 }
