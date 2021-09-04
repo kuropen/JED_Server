@@ -112,6 +112,9 @@ export default class GraphQLRoot {
             where: {
                 date: convertDate(arg.date),
                 type: arg.type
+            },
+            orderBy: {
+                id: "desc"
             }
         })
     }
@@ -129,7 +132,7 @@ export default class GraphQLRoot {
             where: whereClause,
             take: appliedLimit,
             orderBy: {
-                absTime: "desc",
+                id: "desc"
             }
         })
     }
@@ -147,7 +150,7 @@ export default class GraphQLRoot {
             where: whereClause,
             take: appliedLimit,
             orderBy: {
-                absTime: "desc"
+                id: "desc"
             }
         })
     }
