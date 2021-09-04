@@ -1,6 +1,6 @@
-# Japan Electricity Dashboard
+# Japan Electricity Dashboard - Server
 
-** Think about "now" of electricity. **
+**Think about "now" of electricity.**
 
 Japan Electricity Dashboard aims to curate electric demand information of regions in Japan.
 
