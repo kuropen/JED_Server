@@ -1,7 +1,9 @@
 import {
     PrismaClient,
     Area,
-    PeakType
+    PeakType,
+    HourlyDemand,
+    FiveMinDemand
 } from "@prisma/client"
 import { Kind, GraphQLScalarType } from "graphql"
 import { IncomingMessage } from "http"
@@ -100,7 +102,34 @@ export default class GraphQLRoot {
     allArea() {
         return (async (): Promise<Area[]> => {
             // Build actual CSV URL
-            const all = await prisma.area.findMany()
+            const all = await prisma.area.findMany({
+                select: {
+                    code: true,
+                    csvFile: true,
+                    csvFiveMinPos: true,
+                    csvHourlyPos: true,
+                    hasWindData: true,
+                    id: true,
+                    longName: true,
+                    name: true,
+                    officialWeb: true,
+                    peak: {
+                        where: {
+                            type: "PERCENTAGE"
+                        },
+                        orderBy: {
+                            date: "desc"
+                        },
+                        take: 1,
+                    },
+                    hourly: {
+                        orderBy: {
+                            id: "desc"
+                        },
+                        take: 1,
+                    }
+                }
+            })
             const converted = all.map((area) => {
                 const date = moment().tz("Asia/Tokyo").format("YYYYMMDD")
                 const actualCsv = area.csvFile.replace('YYYYMMDD', date)
@@ -133,36 +162,48 @@ export default class GraphQLRoot {
             }
         })
     }
-    hourlyDemand(arg: TimeDemandArgs) {
+    hourlyDemand(arg: TimeDemandArgs): Promise<HourlyDemand[]> {
         let appliedLimit = 24
         if (arg.limit && arg.limit < 100) {
             appliedLimit = arg.limit
         }
-        const whereClause = arg.areaCode ? {
-            area: {
-                code: arg.areaCode,
-            }
-        } : undefined
+        if (arg.areaCode) {
+            return prisma.area.findUnique({
+                where: {
+                    code: arg.areaCode
+                }
+            }).hourly({
+                take: appliedLimit,
+                orderBy: {
+                    id: "desc"
+                }
+            })
+        }
         return prisma.hourlyDemand.findMany({
-            where: whereClause,
             take: appliedLimit,
             orderBy: {
                 id: "desc"
             }
         })
     }
-    fiveMinDemand(arg: TimeDemandArgs) {
+    fiveMinDemand(arg: TimeDemandArgs): Promise<FiveMinDemand[]> {
         let appliedLimit = 36
         if (arg.limit && arg.limit < 150) {
             appliedLimit = arg.limit
         }
-        const whereClause = arg.areaCode ? {
-            area: {
-                code: arg.areaCode,
-            }
-        } : undefined
+        if (arg.areaCode) {
+            return prisma.area.findUnique({
+                where: {
+                    code: arg.areaCode
+                }
+            }).fivemin({
+                take: appliedLimit,
+                orderBy: {
+                    id: "desc"
+                }
+            })
+        }
         return prisma.fiveMinDemand.findMany({
-            where: whereClause,
             take: appliedLimit,
             orderBy: {
                 id: "desc"
