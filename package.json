@@ -1,7 +1,8 @@
 {
   "name": "jed-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Japan Electricity Dashboard Server",
+  "private": true,
   "main": "index.ts",
   "scripts": {
     "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",
@@ -12,8 +13,12 @@
     "migrate": "prisma migrate"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Kuropen",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kuropen/JED_Server"
+  },
   "devDependencies": {
   },
   "dependencies": {
