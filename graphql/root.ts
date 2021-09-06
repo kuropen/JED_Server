@@ -227,6 +227,8 @@ export default class GraphQLRoot {
                 expectedHour: peakInput.expectedHour,
                 percentage: peakInput.percentage,
                 reservePct: peakInput.reservePct,
+                amount: peakInput.amount,
+                supply: peakInput.supply,
             },
             create: {
                 ...peakInput,
