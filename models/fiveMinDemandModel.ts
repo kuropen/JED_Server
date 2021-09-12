@@ -9,7 +9,7 @@ const parseResult = (item: DynamoResult): FiveMinDemand => {
         date: item.date.S || '',
         area: item.area.S || '',
         amount: parseInt(item.amount.N || '0'),
-        absTime: item.absTime.S || '',
+        absTime: item.absDate.S || '',
         createdAt: item.createdAt.S || '',
         solar: parseInt(item.solar.N || '0'),
         time: item.time.S || '',
