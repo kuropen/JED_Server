@@ -20,23 +20,9 @@ enum PeakType {
 }
 
 type PeakElectricity {
-    id: Int!
     createdAt: Date!
-    updatedAt: Date!
-    areaId: Int!
+    area: String!
     date: Date!
-    expectedHour: String!
-    type: PeakType!
-    percentage: Int!
-    reservePct: Int
-    isTomorrow: Boolean
-    amount: Int!
-    supply: Int!
-}
-
-input PeakElectricityInput {
-    areaId: Int!
-    date: String!
     expectedHour: String!
     type: PeakType!
     percentage: Int!
@@ -47,32 +33,19 @@ input PeakElectricityInput {
 }
 
 type HourlyDemand {
-    id: Int!
     createdAt: Date!
-    updatedAt: Date!
-    areaId: Int!
+    area: String!
     date: Date!
     hour: Int!
     amount: Int!
     supply: Int!
     percentage: Int!
     absTime: Date
-}
-
-input HourlyDemandInput {
-    areaId: Int!
-    date: String!
-    hour: Int!
-    amount: Int!
-    supply: Int!
-    percentage: Int!
 }
 
 type FiveMinDemand {
-    id: Int!
     createdAt: Date!
-    updatedAt: Date!
-    areaId: Int!
+    area: String!
     date: Date!
     time: String!
     amount: Int!
@@ -81,27 +54,10 @@ type FiveMinDemand {
     absTime: Date
 }
 
-input FiveMinDemandInput {
-    areaId: Int!
-    date: String!
-    time: String!
-    amount: Int!
-    solar: Int
-    wind: Int
-}
-
 type Query {
-    authorized: Boolean
-    message: String
     allArea: [Area!]!
     areaByCode(code: String!): Area
     peakElectricity(date: String, type: PeakType, areaCode: String): [PeakElectricity]
-    hourlyDemand(areaCode: String, limit: Int): [HourlyDemand]
-    fiveMinDemand(areaCode: String, limit: Int): [FiveMinDemand]
-}
-
-type Mutation {
-    postPeakElectricity(peakInput: PeakElectricityInput): PeakElectricity
-    postHourlyDemand(hourlyInput: HourlyDemandInput): HourlyDemand
-    postFiveMinDemand(fiveInput: FiveMinDemandInput): FiveMinDemand
+    hourlyDemand(areaCode: String!, limit: Int): [HourlyDemand]
+    fiveMinDemand(areaCode: String!, limit: Int): [FiveMinDemand]
 }
