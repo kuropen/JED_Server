@@ -6,7 +6,9 @@
   "main": "index.ts",
   "scripts": {
     "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",
-    "start": "ts-node index.ts",
+    "dev": "ts-node index.ts",
+    "build": "webpack --config ./webpack/prod.config.js",
+    "start": "npm run build && node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,7 +18,13 @@
     "type": "git",
     "url": "https://github.com/kuropen/JED_Server"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ts-loader": "^8.3.0",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-merge": "^5.8.0",
+    "webpack-node-externals": "^3.0.0"
+  },
   "dependencies": {
     "@aws-sdk/client-appconfig": "^3.31.0",
     "@aws-sdk/client-dynamodb": "^3.31.0",

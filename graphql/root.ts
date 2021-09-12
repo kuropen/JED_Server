@@ -5,6 +5,7 @@ import { getFiveMinDemandByArea } from "../models/fiveMinDemandModel"
 import { getHourlyDemandByArea } from "../models/hourlyDemandModel"
 import { getPeakElectricityByAreaAndDate, getPeakElectricityByAreaAndDateAndType, getPeakElectricityWithoutArea } from "../models/peakElectricityModel"
 import { Area, FiveMinDemand, HourlyDemand } from "../types"
+import getImplicitDate from "../utilities/getImplicitDate";
 
 type PeakType = "AMOUNT" | "PERCENTAGE"
 
@@ -54,8 +55,7 @@ export default class GraphQLRoot {
         return getSingleArea(args.code)
     }
     async peakElectricity(arg: PeakElectricityArgs) {
-        const currentDate = moment().tz("Asia/Tokyo").format("YYYY-MM-DD")
-        const date = arg.date || currentDate
+        const date = arg.date || getImplicitDate()
         if (arg.areaCode) {
             let result
             if (arg.type) {
