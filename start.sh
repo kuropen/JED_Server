@@ -2,4 +2,5 @@
 
 cd $(dirname $0)
 
-npm run start
+node dist/server.js
+
