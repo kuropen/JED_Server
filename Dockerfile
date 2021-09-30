@@ -4,7 +4,7 @@ RUN apk --update add bash
 RUN mkdir -p /srv
 WORKDIR /srv
 COPY . /srv/
-RUN npm install && npm run build
+RUN yarn install && yarn build
 RUN chmod 755 /srv/start.sh
 EXPOSE 4000
 CMD [ "/srv/start.sh" ]

@@ -3,12 +3,15 @@ import { graphqlHTTP } from "./node_modules/express-graphql/index"
 import { buildSchema } from "graphql"
 import { readFileSync } from "fs"
 import GraphQLRoot from "./graphql/root"
+import cors from "cors"
 
 function jedServer() {
     const port = process.env.PORT || 4000
     const app = express()
 
     const schema = buildSchema(readFileSync('./graphql/schema.graphql').toString())
+
+    app.use(cors())
 
     app.use(
         '/graphql',
