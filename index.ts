@@ -6,6 +6,7 @@ import GraphQLRoot from "./graphql/root"
 import cors from "cors"
 
 function jedServer() {
+    const isDevelop = (process.env.NODE_ENV || 'develop') === 'develop'
     const port = process.env.PORT || 4000
     const app = express()
 
@@ -18,7 +19,7 @@ function jedServer() {
         graphqlHTTP({
             schema: schema,
             rootValue: new GraphQLRoot(),
-            graphiql: true,
+            graphiql: isDevelop,
         })
     )
 
